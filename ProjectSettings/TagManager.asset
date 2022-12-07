@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Stair
+  - PlayerHit
+  - SnowBall
+  - UnformedBall
+  - Wall
+  - DeadZone
+  - Boss
+  - RollingSnowBall
+  - Red
+  - Blue
+  - Yellow
+  - Invincibility
+  - Son
+  - Floor
+  - DeadPlayer
+  - Green
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Player
+  - PlayerHit
+  - UnformedBall
+  - SnowBall
+  - Boss
+  - BossOnStage
+  - Stair
+  - Dead
+  - Item
+  - Invincibility
+  - BossFloor
+  - Son
+  - Wall
+  - RollingSnowBall
+  - DeadPlayer
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Sky
+    uniqueID: 1212027521
+    locked: 0
+  - name: BackGround
+    uniqueID: 1360142579
+    locked: 0
+  - name: Boss
+    uniqueID: 3898859081
+    locked: 0
+  - name: Son
+    uniqueID: 10934027
+    locked: 0
+  - name: Player
+    uniqueID: 805022475
+    locked: 0
+  - name: Item
+    uniqueID: 1908755683
+    locked: 0
