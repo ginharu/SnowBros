@@ -20,6 +20,7 @@ TagManager:
   - Floor
   - DeadPlayer
   - Green
+  - BossOnStage
   layers:
   - Default
   - TransparentFX

@@ -1,70 +1,53 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+namespace script
 {
-    public int dir;
-    public float speed = 7;
-    float destroyTime = 1;
-    float shootingTime;
-    float flyTime=0.5f;
-    Rigidbody2D rigidbody;
-
-    public void Start()
+    public class Bullet : MonoBehaviour
     {
+        public int dir;
+        public float speed = 7;
+        private const float DestroyTime = 1;
+        private float _shootingTime;
+        private float _flyTime=0.5f;
+        private Rigidbody2D _rigidbody;
+
+        public void Start()
+        {
         
-        if (dir == 1)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-            
+            transform.localScale = dir == 1 ? new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _shootingTime = Time.time;
         }
-        else
+
+        private void Update()
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            if (Time.time >= _flyTime + _shootingTime)
+            {
+                _rigidbody.isKinematic = false;
+                var transform1 = transform;
+                transform1.position += transform1.right * (dir * 0.9f * Time.deltaTime);
+            }else
+            {
+                var transform1 = transform;
+                transform1.position += transform1.right * (dir * speed * Time.deltaTime);
+            }
+
+            if (Time.time >= _shootingTime + DestroyTime)
+            {
+                Destroy(this.gameObject);
+            }
         }
-        rigidbody = GetComponent<Rigidbody2D>();
-        shootingTime = Time.time;
+
+        public void UpdateTime(bool up) {
+            if (up) {
+                _flyTime = _flyTime * 2;
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            Destroy(gameObject);
+        }
+
     }
-
-    void Update()
-    {
-        if (Time.time >= flyTime + shootingTime)
-        {
-            rigidbody.isKinematic = false;
-            transform.position += transform.right * dir *0.9f * Time.deltaTime;
-        }else {
-            transform.position += transform.right * dir * speed * Time.deltaTime;
-        }
-
-        if (Time.time >= shootingTime + destroyTime)
-        {
-            Destroy(this.gameObject);
-        }
-    }
-
-    public void updateTime(bool up) {
-        if (up) {
-            flyTime = flyTime * 2;
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Boss" || collision.tag == "UnformedBall")
-        {
-            
-            //if (player == 1)
-            //{
-            //    Score1.score1p += 10;
-            //}
-            //else
-            //{
-            //    Score2.score2p += 10;
-            //}
-
-        }
-        Destroy(gameObject);
-    }
-
 }

@@ -1,311 +1,321 @@
+using System;
 using UnityEngine;
 
-public enum SnowBallState
+namespace script
 {
-    UnFormed1,
-    UnFormed2,
-    Ball,
-    Rolling,
-    TurnToSon,
-}
-public class SnowBall : MonoBehaviour
-{
-    [HideInInspector]
-    public int playerNum;
-    SpriteRenderer Renderer;
-    int itemNum;
-    bool isGround;
-    //ѩ���ƶ��ķ���
-    int dir1;
-    Transform checkGround;
-    public Transform prefabSon;
-    public Transform prefabRedPotion;
-    public Transform prefabBluePotion;
-    public Transform prefabYellowPotion;
-    public Transform prefabGreenPotion;
-    int hp = 0;
-    Animator anim;
-    float freezeTime = 5;
-    float beFrozonTime;
-    Rigidbody2D rigid;
-    public float rollSpeed = 6;
-    public SnowBallState state = SnowBallState.UnFormed1;
-
-    void Start()
+    public enum SnowBallState
     {
-        
-        Renderer = GetComponent<SpriteRenderer>();
-        itemNum = UnityEngine.Random.Range(1, 100);
-        hp = 0;
-        beFrozonTime = Time.time;
-        checkGround = transform.Find("CheckGround");
-        anim = GetComponent<Animator>();
-        rigid = GetComponent<Rigidbody2D>();
-
-       // control = GetComponent<P1Control>();
-
+        UnFormed1,
+        UnFormed2,
+        Ball,
+        Rolling,
+        TurnToSon,
     }
-    void Update()
+    public class SnowBall : MonoBehaviour
     {
-        switch (state)
+        [HideInInspector]
+        public int playerNum;
+
+        private SpriteRenderer _renderer;
+        private int _itemNum;
+
+        private bool _isGround;
+        private int _dir1;
+        private Transform _checkGround;
+        public Transform prefabSon;
+        public Transform prefabRedPotion;
+        public Transform prefabBluePotion;
+        public Transform prefabYellowPotion;
+        public Transform prefabGreenPotion;
+        private int _hp = 0;
+        private Animator _anim;
+        private const float FreezeTime = 5;
+        private float _beFrozenTime;
+        private Rigidbody2D _rigid;
+        public float rollSpeed = 6;
+        public SnowBallState state = SnowBallState.UnFormed1;
+        private static readonly int Rolling = Animator.StringToHash("Rolling");
+        private static readonly int Hp = Animator.StringToHash("hp");
+        private static readonly int Push = Animator.StringToHash("Push");
+
+        private void Start()
         {
-            case SnowBallState.UnFormed1:
+            _renderer = GetComponent<SpriteRenderer>();
+            _itemNum = UnityEngine.Random.Range(1, 100);
+            _hp = 0;
+            _beFrozenTime = Time.time;
+            _checkGround = transform.Find("CheckGround");
+            _anim = GetComponent<Animator>();
+            _rigid = GetComponent<Rigidbody2D>();
+
+            // control = GetComponent<P1Control>();
+
+        }
+
+        private void Update()
+        {
+            switch (state)
+            {
+                case SnowBallState.UnFormed1:
                 {
-                    hp = 0;
-                    if (gameObject.tag != "RollingSnowBall")
+                    _hp = 0;
+                    if (!gameObject.CompareTag("RollingSnowBall"))
                     {
                         gameObject.tag = "UnformedBall";
                         gameObject.layer = LayerMask.NameToLayer("UnformedBall");
                     }
-                    if (Time.time >= beFrozonTime + freezeTime)
+                    if (Time.time >= _beFrozenTime + FreezeTime)
                     {
-
                         state = SnowBallState.TurnToSon;
                     }
                 }
-                break;
-            case SnowBallState.UnFormed2:
+                    break;
+                case SnowBallState.UnFormed2:
                 {
-                    hp = 1;
-                    if (gameObject.tag != "RollingSnowBall")
+                    _hp = 1;
+                    if (!gameObject.CompareTag("RollingSnowBall"))
                     {
                         gameObject.tag = "UnformedBall";
                         gameObject.layer = LayerMask.NameToLayer("UnformedBall");
                     }
-                    if (Time.time >= beFrozonTime + freezeTime)
+                    if (Time.time >= _beFrozenTime + FreezeTime)
                     {
-                        beFrozonTime = Time.time;
+                        _beFrozenTime = Time.time;
                         state = SnowBallState.UnFormed1;
                     }
                 }
-                break;
-            case SnowBallState.Ball:
+                    break;
+                case SnowBallState.Ball:
                 {
-                    hp = 2;
-                    if (gameObject.tag != "RollingSnowBall")
+                    _hp = 2;
+                    if (!gameObject.CompareTag("RollingSnowBall"))
                     {
                         gameObject.tag = "SnowBall";
                         gameObject.layer = LayerMask.NameToLayer("SnowBall");
                     }
-                    if (Time.time >= beFrozonTime + freezeTime)
+                    if (Time.time >= _beFrozenTime + FreezeTime)
                     {
-                        beFrozonTime = Time.time;
+                        _beFrozenTime = Time.time;
                         state = SnowBallState.UnFormed2;
 
                     }
                 }
-                break;
-            case SnowBallState.Rolling:
+                    break;
+                case SnowBallState.Rolling:
                 {
-                    anim.SetTrigger("Rolling");
-                    if (isGround)
+                    _anim.SetTrigger(Rolling);
+                    if (_isGround)
                     {
-                        Vector2 v = new Vector2(dir1 * rollSpeed, rigid.velocity.y);
-                        rigid.velocity = v;
+                        Vector2 v = new Vector2(_dir1 * rollSpeed, _rigid.velocity.y);
+                        _rigid.velocity = v;
                     }
                     else
                     {
-                        Vector2 v = new Vector2(dir1 * 7, rigid.velocity.y);
+                        Vector2 v = new Vector2(_dir1 * 7, _rigid.velocity.y);
 
-                        rigid.velocity = v;
+                        _rigid.velocity = v;
                     }
 
                 }
-                break;
-            case SnowBallState.TurnToSon:
+                    break;
+                case SnowBallState.TurnToSon:
                 {
-                    Transform son = Instantiate(prefabSon, transform.position, Quaternion.identity);
-                    Son son1 = son.GetComponent<Son>();
+                    var son = Instantiate(prefabSon, transform.position, Quaternion.identity);
+                    // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
+                    var son1 = son.GetComponent<Son>();
                     son1.reTurn = true;
                     Destroy(gameObject);
                 }
-                break;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
-    }
-    private void FixedUpdate()
-    {
-        CheckGround();
-        anim.SetInteger("hp", hp);
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
+        private void FixedUpdate()
+        {
+            CheckGround();
+            _anim.SetInteger(Hp, _hp);
+        }
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
        
-        if (collision.tag == "PlayerHit")
-        {
-            ChangeState();
-            beFrozonTime = Time.time;
-        }
+            if (collision.CompareTag("PlayerHit"))
+            {
+                ChangeState();
+                _beFrozenTime = Time.time;
+            }
         
-        if (gameObject.tag == "RollingSnowBall")
-        {
-
-            if (collision.tag == "Wall" || collision.tag == "Stair")
+            if (gameObject.CompareTag("RollingSnowBall"))
             {
-                dir1 = -dir1;
+
+                if (collision.CompareTag("Wall") || collision.CompareTag("Stair"))
+                {
+                    _dir1 = -_dir1;
+                }
             }
         }
-    }
 
 
     
-    void ChangeState()
-    {
-        if (state == SnowBallState.UnFormed1)
+        void ChangeState()
         {
-            state = SnowBallState.UnFormed2;
+            if (state == SnowBallState.UnFormed1)
+            {
+                state = SnowBallState.UnFormed2;
+            }
+            else if (state == SnowBallState.UnFormed2)
+            {
+                state = SnowBallState.Ball;
+            }
         }
-        else if (state == SnowBallState.UnFormed2)
-        {
-            state = SnowBallState.Ball;
-        }
-    }
     
-    public void Roll(int dir)
-    {
-        dir1 = dir;
-        gameObject.tag = "RollingSnowBall";
-        gameObject.layer = LayerMask.NameToLayer("RollingSnowBall");
-        Vector2 v = new Vector2(dir * rollSpeed, rigid.velocity.y);
-        rigid.velocity = v;
-        state = SnowBallState.Rolling;
-    }
-
-
-    void CheckGround()
-    {
-        isGround = Physics2D.OverlapCircle(checkGround.position, 0.1f, ~LayerMask.GetMask("RollingSnowBall"));
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.tag == "RollingSnowBall" && gameObject.tag == "UnformedBall")
+        public void Roll(int dir)
         {
-            Destroy(gameObject);
-          
-            if (itemNum >= 90)
-            {
-                Transform redPotion = Instantiate(prefabRedPotion, transform.position, Quaternion.identity);
-            }
-            else if (itemNum >= 80 && itemNum < 90)
-            {
-                Transform bluePotion = Instantiate(prefabBluePotion, transform.position, Quaternion.identity);
-            }
-            else if (itemNum >= 70 && itemNum < 80)
-            {
-                Transform yellowPotion = Instantiate(prefabYellowPotion, transform.position, Quaternion.identity);
-            }
-            else
-            {
-                Transform greenPotion = Instantiate(prefabGreenPotion, transform.position, Quaternion.identity);
-            }
+            _dir1 = dir;
+            gameObject.tag = "RollingSnowBall";
+            gameObject.layer = LayerMask.NameToLayer("RollingSnowBall");
+            Vector2 v = new Vector2(dir * rollSpeed, _rigid.velocity.y);
+            _rigid.velocity = v;
+            state = SnowBallState.Rolling;
         }
-        if (gameObject.tag == "RollingSnowBall")
+
+
+        private void CheckGround()
         {
-            if (collision.collider.tag == "DeadZone" || collision.collider.tag == "Boss")
+            // ReSharper disable once HeapView.ObjectAllocation
+            _isGround = Physics2D.OverlapCircle(_checkGround.position, 0.1f, ~LayerMask.GetMask("RollingSnowBall"));
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.collider.CompareTag("RollingSnowBall") && gameObject.CompareTag("UnformedBall"))
+            {
+                Destroy(gameObject);
+
+                switch (_itemNum)
+                {
+                    case >= 90:
+                    {
+                        Instantiate(prefabRedPotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                    case >= 80 and < 90:
+                    {
+                        Instantiate(prefabBluePotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                    case >= 70 and < 80:
+                    {
+                        Instantiate(prefabYellowPotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                    default:
+                    {
+                        Instantiate(prefabGreenPotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                }
+            }
+
+            if (!gameObject.CompareTag("RollingSnowBall")) return;
+            if (collision.collider.CompareTag("DeadZone") || collision.collider.CompareTag("Boss"))
             {
                 Destroy(gameObject);
             }
         }
-    }
 
-    private void OnCollisionExit2D(Collision2D other) {
-        P1Player P1player =  GameObject.Find("Nick").GetComponent<P1Player>();
-        if (gameObject.tag == "SnowBall" || gameObject.tag == "RollingSnowBall")
-        {
-            P1player.ani.SetBool("Push", false);
-        }
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        P1Control P1Control =  GameObject.Find("Nick").GetComponent<P1Control>();
-        P1Player P1player =  GameObject.Find("Nick").GetComponent<P1Player>();
-        if (gameObject.tag == "SnowBall")
-        {
-            if (collision.collider.tag == "Player" || collision.collider.tag == "Invincibility")
+        private void OnCollisionExit2D() {
+            var p1Player =  GameObject.Find("Nick").GetComponent<P1Player>();
+            if (gameObject.CompareTag("SnowBall") || gameObject.CompareTag("RollingSnowBall"))
             {
-                P1player.ani.SetBool("Push", true);
-                if (P1Control.fire){
-                   Roll(P1player.direction);
-                }
+                p1Player.ani.SetBool(Push, false);
             }
         }
 
-        if (gameObject.tag == "RollingSnowBall")
+        private void OnCollisionStay2D(Collision2D collision)
         {
-            if (collision.collider.tag == "Wall")
+            var p1Control =  GameObject.Find("Nick").GetComponent<P1Control>();
+            var p1Player =  GameObject.Find("Nick").GetComponent<P1Player>();
+            if (gameObject.CompareTag("SnowBall"))
             {
-                if (transform.position.x > 0)
+                if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("Invincibility"))
                 {
-                    Roll(-1);
-                }
-                else
-                {
-                    Roll(1);
+                    p1Player.ani.SetBool(Push, true);
+                    if (p1Control.fire){
+                        Roll(p1Player.direction);
+                    }
                 }
             }
-            if (collision.collider.tag == "Stair")
-            {
-                if (transform.position.x > 0)
-                {
-                    Roll(1);
-                }
-                else
-                {
-                    Roll(-1);
-                }
-            }
-        }
 
-        if (collision.collider.tag == "RollingSnowBall" && gameObject.tag == "UnformedBall")
-        {
-            Destroy(gameObject);
-            //���ߵ���
-            if (itemNum >= 75)
+            if (gameObject.CompareTag("RollingSnowBall"))
             {
-                Transform redPotion = Instantiate(prefabRedPotion, transform.position, Quaternion.identity);
+                if (collision.collider.CompareTag("Wall"))
+                {
+                    if (transform.position.x > 0)
+                    {
+                        Roll(-1);
+                    }
+                    else
+                    {
+                        Roll(1);
+                    }
+                }
+                if (collision.collider.CompareTag("Stair"))
+                {
+                    if (transform.position.x > 0)
+                    {
+                        Roll(1);
+                    }
+                    else
+                    {
+                        Roll(-1);
+                    }
+                }
             }
-            else if (itemNum >= 50 && itemNum < 75)
-            {
-                Transform bluePotion = Instantiate(prefabBluePotion, transform.position, Quaternion.identity);
-            }
-            else if (itemNum >= 25 && itemNum < 50)
-            {
-                Transform yellowPotion = Instantiate(prefabYellowPotion, transform.position, Quaternion.identity);
-            }
-            else
-            {
-                Transform greenPotion = Instantiate(prefabGreenPotion, transform.position, Quaternion.identity);
-            }
-        }
 
-        if (gameObject.tag == "RollingSnowBall")
-        {
-            //ѩ������Boss��DeadZone������
-            if (collision.collider.tag == "DeadZone" || collision.collider.tag == "Boss")
+            if (collision.collider.CompareTag("RollingSnowBall") && gameObject.CompareTag("UnformedBall"))
+            {
+                Destroy(gameObject);
+                switch (_itemNum)
+                {
+                    case >= 75:
+                    {
+                        Instantiate(prefabRedPotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                    case >= 50 and < 75:
+                    {
+                        Instantiate(prefabBluePotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                    case >= 25 and < 50:
+                    {
+                        Instantiate(prefabYellowPotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                    default:
+                    {
+                        Instantiate(prefabGreenPotion, transform.position, Quaternion.identity);
+                        break;
+                    }
+                }
+            }
+
+            if (!gameObject.CompareTag("RollingSnowBall")) return;
+            if (collision.collider.CompareTag("DeadZone") || collision.collider.CompareTag("Boss"))
             {
                 Destroy(gameObject);
             }
 
-            //�����е�ѩ������������ѩ����򷴷������
-            if (collision.collider.tag == "SnowBall")
+            if (collision.collider.CompareTag("SnowBall"))
             {
-                SnowBall ball = collision.transform.GetComponent<SnowBall>();
-                if (playerNum == 1)
-                {
-                    ball.Renderer.color = Color.blue;
-                }
-                else
-                {
-                    ball.Renderer.color = Color.red;
-                }
+                var ball = collision.transform.GetComponent<SnowBall>();
+                ball._renderer.color = playerNum == 1 ? Color.blue : Color.red;
 
-                ball.Roll(dir1);
-                dir1 = -dir1;
+                ball.Roll(_dir1);
+                _dir1 = -_dir1;
             }
-
         }
-    }
 
+    }
 }
-

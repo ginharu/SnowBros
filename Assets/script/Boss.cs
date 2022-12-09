@@ -1,111 +1,116 @@
-using UnityEngine.UI;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
-public class Boss : MonoBehaviour
+namespace script
 {
-    public Image Bar;
-    private bool jump = false;
-    private bool bigJump = false;
-    // private bool stand = false;
-    // private bool down = false;
-    // private bool dead = true;
-    public TextMeshProUGUI BossHP;
-
-    public float HP;
-    public float maxHP;
-    public int bigJumpHeight = 10;
-    public GameObject Son1;
-    float standTime = 3f;
-    float lastStandTime;
-    int jumpCount = 3;
-    private string bossState;
-    Animator anim;
-    Rigidbody2D Rigidbody;
-    Transform firePoint;
-    public float fireCD = 0.1f;
-    float lastFireTime;
-
-    // Start is called before the first frame update
-    void Start()
+    public class Boss : MonoBehaviour
     {
-        bossState = "stand";
-        firePoint = transform.Find("FirePoint");
-        Rigidbody = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-    }
+        [FormerlySerializedAs("Bar")] public Image bar;
+        private bool _jump;
+        private bool _bigJump;
+        [FormerlySerializedAs("BossHP")] public TextMeshProUGUI bossHp;
 
-    // Update is called once per frame
-    void Update()
-    {
-        BossHP.text = "Boss: " + HP.ToString();
-        if (bossState == "Down")
+        [FormerlySerializedAs("HP")] public float hp;
+        [FormerlySerializedAs("maxHP")] public float maxHp;
+        public int bigJumpHeight = 10;
+        [FormerlySerializedAs("Son1")] public GameObject son1;
+        private float _standTime = 3f;
+        private float _lastStandTime;
+        private int _jumpCount = 3;
+        private string _bossState;
+        private Animator _anim;
+        private Rigidbody2D _rigidbody;
+        private Transform _firePoint;
+        [FormerlySerializedAs("fireCD")] public float fireCd = 0.1f;
+        private float _lastFireTime;
+        private static readonly int Jump = Animator.StringToHash("Jump");
+        private static readonly int BigJump1 = Animator.StringToHash("BigJump");
+        private static readonly int IsGround = Animator.StringToHash("IsGround");
+        private static readonly int Dead = Animator.StringToHash("Dead");
+
+        // Start is called before the first frame update
+        private void Start()
         {
-            jumpCount = 4;
+            _bossState = "stand";
+            _firePoint = transform.Find("FirePoint");
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _anim = GetComponent<Animator>();
         }
-        BarFiller();
-    }
 
-    public void GetHit(int damage)
-    {
-        HP -= damage;
-        if (HP < 0)
+        // Update is called once per frame
+        private void Update()
         {
-            HP = 0;
+            // ReSharper disable once HeapView.BoxingAllocation
+            bossHp.text = $"Boss: {hp}";
+            if (_bossState == "Down")
+            {
+                _jumpCount = 4;
+            }
+            BarFiller();
         }
-    }
-    void Attack()
-    {
-        if (Time.time < lastFireTime + fireCD)
+
+        public void GetHit(int damage)
         {
-            return;
+            hp -= damage;
+            if (hp < 0)
+            {
+                hp = 0;
+            }
         }
-        GameObject Sons = Instantiate(Son1, firePoint.position, Quaternion.identity);
-        lastFireTime = Time.time;
-    }
+
+        private void Attack()
+        {
+            if (Time.time < _lastFireTime + fireCd)
+            {
+                return;
+            }
+            var sons = Instantiate(son1, _firePoint.position, Quaternion.identity);
+            _lastFireTime = Time.time;
+        }
     
-    private void BarFiller(){
-        Bar.fillAmount = HP/maxHP;
-    }
-
-    public void normalJump()
-    {
-        jumpCount--;
-        if (jumpCount < 0)
-        {
-            jumpCount = 0;
+        private void BarFiller(){
+            bar.fillAmount = hp/maxHp;
         }
 
-        jump = true;
-        if (jump)
+        private void NormalJump()
         {
-            anim.SetTrigger("Jump");
-        }
+            _jumpCount--;
+            if (_jumpCount < 0)
+            {
+                _jumpCount = 0;
+            }
+
+            _jump = true;
+            if (_jump)
+            {
+                _anim.SetTrigger(Jump);
+            }
         
-        float vx = Rigidbody.velocity.x;
-        Rigidbody.velocity = new Vector2(vx, 3);
-        bossState = "stand";
-    }
-
-    public void BigJump()
-    {
-        bigJump = true;
-        if (bigJump)
-        {
-            anim.SetTrigger("BigJump");
-            float vx = Rigidbody.velocity.x;
-            Rigidbody.velocity = new Vector2(vx, bigJumpHeight);
+            var vx = _rigidbody.velocity.x;
+            _rigidbody.velocity = new Vector2(vx, 3);
+            _bossState = "stand";
         }
-    }
-    public void Down()
-    {
-        bigJump = true;
-        if (bigJump)
+
+        private void BigJump()
         {
-            anim.SetTrigger("BigJump");
-            float vx = Rigidbody.velocity.x;
-            Debug.Log(Rigidbody.velocity.x);
-            float px = Rigidbody.position.x;
+            _bigJump = true;
+            if (_bigJump)
+            {
+                _anim.SetTrigger(BigJump1);
+                float vx = _rigidbody.velocity.x;
+                _rigidbody.velocity = new Vector2(vx, bigJumpHeight);
+            }
+        }
+        // ReSharper disable Unity.PerformanceAnalysis
+        private void Down()
+        {
+            _bigJump = true;
+            if (!_bigJump) return;
+            _anim.SetTrigger(BigJump1);
+            var vx = _rigidbody.velocity.x;
+            var px = _rigidbody.position.x;
             if (px > 0) {
                 vx -= 5;
             }
@@ -114,104 +119,94 @@ public class Boss : MonoBehaviour
                 vx += 5f;
             }
 
-            Rigidbody.velocity = new Vector2(vx, 8);
+            _rigidbody.velocity = new Vector2(vx, 8);
 
             //int range = UnityEngine.Random.Range(1, 3);
             //Debug.Log(range);
             transform.localScale = new Vector3(px > 0 ? -1f : 1f, 1f, 1f);
+
         }
-
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "PlayerHit")
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            HP--;
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-        if (collision.collider.tag == "RollingSnowBall")
-        {
-            HP -= 200;
-            if (HP < 0)
+            if (collision.CompareTag("PlayerHit"))
             {
-                HP = 0;
+                hp--;
             }
         }
-        if (collision.collider.tag == "Floor")
-        {
-            anim.SetBool("IsGround", true);
-        }
 
-        else
+        private void OnCollisionEnter2D(Collision2D collision)
         {
-            anim.SetBool("IsGround", false);
-        }
-    }
-    public void Destroy()
-    {
-        Destroy(gameObject);
-    }
-    private void FixedUpdate()
-    {
-        bigJump = false;
-        if (HP <= 0) 
-        {
-            bossState = "dead";
-        }
-        switch (bossState)
-        {
-            case "stand":
+            if (collision.collider.CompareTag("RollingSnowBall"))
             {
-                if (Time.time - (lastStandTime + standTime) > 1.5f)
+                hp -= 200;
+                if (hp < 0)
                 {
-                    standTime = 0;
-                    if (transform.position.y > 1 && Time.time - lastStandTime > 6)
-                    {
-                        bossState = "down";
-                    }
-                    else if (transform.position.y < 1)
-                    {
-                        bossState = "jump";
-                    }
+                    hp = 0;
                 }
-                break;
             }
-            case "jump":
+
+            _anim.SetBool(IsGround, collision.collider.CompareTag("Floor"));
+        }
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+        private void FixedUpdate()
+        {
+            _bigJump = false;
+            if (hp <= 0) 
+            {
+                _bossState = "dead";
+            }
+            switch (_bossState)
+            {
+                case "stand":
                 {
-                    normalJump();
-                    lastStandTime = Time.time;
-                    if (jumpCount == 0)
+                    if (Time.time - (_lastStandTime + _standTime) > 1.5f)
                     {
-                        bossState = "bigJump";
+                        _standTime = 0;
+                        if (transform.position.y > 1 && Time.time - _lastStandTime > 6)
+                        {
+                            _bossState = "down";
+                        }
+                        else if (transform.position.y < 1)
+                        {
+                            _bossState = "jump";
+                        }
                     }
                     break;
                 }
-            case "bigJump":
+                case "jump":
+                {
+                    NormalJump();
+                    _lastStandTime = Time.time;
+                    if (_jumpCount == 0)
+                    {
+                        _bossState = "bigJump";
+                    }
+                    break;
+                }
+                case "bigJump":
                 {
                     BigJump();
-                    Debug.Log("BIG");
-                    lastStandTime = Time.time;
-                    bossState = "stand";
+                    _lastStandTime = Time.time;
+                    _bossState = "stand";
                     break;
                 }
-            case "down":
+                case "down":
                 {
                     Down();
-                    Debug.Log("Down");
-                    lastStandTime = Time.time;
-                    bossState = "stand";
+                    _lastStandTime = Time.time;
+                    _bossState = "stand";
                     break;
                 }
-            case "dead":
+                case "dead":
                 {
                 
-                    anim.SetBool("Dead",true);
+                    _anim.SetBool(Dead,true);
                     break;
                 }
+            }
         }
     }
 }

@@ -43,10 +43,10 @@ GameObject:
   - component: {fileID: 2235456383558641848}
   - component: {fileID: 2235456383558641799}
   - component: {fileID: 2235456383558641798}
-  - component: {fileID: 2235456383558641797}
-  - component: {fileID: 2235456383558641796}
   - component: {fileID: 2235456383558641795}
   - component: {fileID: 2235456383558641850}
+  - component: {fileID: -969836576550455776}
+  - component: {fileID: -5428433111258388347}
   m_Layer: 6
   m_Name: Nick
   m_TagString: Player
@@ -110,7 +110,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1168688747
+  m_SortingLayerID: 805022475
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: -5309417508686127366, guid: 4ad96ec7ca1fcac48b964eb8a624c1b1, type: 3}
@@ -161,43 +161,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &2235456383558641797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2235456383558641794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5200643192c9a6a458585e05a2922bb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  h: 0
-  v: 0
-  jump: 0
-  fire: 0
---- !u!114 &2235456383558641796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2235456383558641794}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a2d8cd6ebf145d488aa61b30e03614c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  preFabAddPoint100: {fileID: 8358376935731064118, guid: 3887039241c65a6478c318f572136079, type: 3}
-  preFabAddPoint2000: {fileID: 8984869573594472155, guid: a411d9b0a54ebce4c9e077ecbd3d9605, type: 3}
-  preFabBullet: {fileID: 6052856210216779526, guid: c7c1673609001bf4080d0263e40f3f90, type: 3}
-  preFabBigBullet: {fileID: 845206810241437235, guid: 2c5ce5f87c4eb384bbd11f07e632ed61, type: 3}
-  speed: 3
-  fireCD: 0.2
-  scaleRight: {x: -1, y: 1, z: 1}
-  scaleLeft: {x: 1, y: 1, z: 1}
-  jumpSpeed: 5.8
 --- !u!95 &2235456383558641795
 Animator:
   serializedVersion: 4
@@ -244,6 +207,51 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.48820287, y: 0.1184659}
   m_EdgeRadius: 0
+--- !u!114 &-969836576550455776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2235456383558641794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01e2987aa1228410fbcb1dfc37500f45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  h: 0
+  v: 0
+  jump: 0
+  fire: 0
+  move: 0
+  speed: 1.5
+  jumpSpeed: 6
+--- !u!114 &-5428433111258388347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2235456383558641794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44b5c0b7ce61b46e8ab34f3d7833e920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  potionsRedTime: 0
+  potionsBlueTime: 0
+  potionsYellowTime: 0
+  potionsGreenTime: 0
+  direction: 0
+  normalBullet: {fileID: 6052856210216779526, guid: 9f92cbf9802614d209ab15f4baf450ea, type: 3}
+  enhancedBullets: {fileID: 845206810241437235, guid: 3b60e214b5302405a8e315a2573fb9a5, type: 3}
+  ani: {fileID: 0}
+  life: 0
+  lifeText: {fileID: 0}
+  isDead: 0
+  startInvincibleTime: 0
+  invincibleTime: 3
+  isInvincible: 0
 --- !u!1 &2235456384542281263
 GameObject:
   m_ObjectHideFlags: 0
